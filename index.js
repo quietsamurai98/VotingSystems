@@ -1,3 +1,137 @@
+var voterObjArr = [];
+var candidateObjArr = [];
+
+function Voter(x, y){ //Voter object. Contains data about a person who's voting.
+    this.x = x; //x position on 2d political spectrum
+    this.y = y; //y position on 2d political spectrum
+    
+    this.get_irv_ballot = function(){
+        var distArr = [];
+        var l = candidateObjArr.length;
+        for(var i=0; i<l; i++){
+            var candidate=candidateObjArr[i];
+            var dx = this.x-candidate.x;
+            var dy = this.y-candidate.y;
+            distArr[i]= [Math.sqrt(dx*dx+dy*dy), candidate.name];
+        }
+        distArr.sort(function(a,b) {
+            return a[0]-b[0];
+        });
+        var ballot = [];
+        for(var i=0; i<l; i++){
+            ballot[i] = distArr[i][1];
+        }
+        return ballot;
+    };
+}
+
+function Candidate(name, x, y){ //Candidate object. Contains data about a person who's running for office
+    this.name = name;
+    this.x = x; //x position on 2d political spectrum
+    this.y = y; //y position on 2d political spectrum
+}
+
+function generateCandidates_random(amount){
+    candidateObjArr = [];
+    var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for(var i=0; i<amount; i++){
+        candidateObjArr.push(new Candidate(alphabet.charAt(i),Math.random()*20-10, Math.random()*20-10));
+    }
+}
+
+function generateVoters_random(amount){
+    voterObjArr = [];
+    for(var i=0; i<amount; i++){
+        voterObjArr.push(new Voter(Math.random()*20-10, Math.random()*20-10));
+    }
+}
+
+function generateVoters_normal(amount){ //Uses normal distribution
+    voterObjArr = [];
+    for(var i=0; i<amount; i++){
+        voterObjArr.push(new Voter(normalRandomInRange(-0.25, 0.25)*40, normalRandomInRange(-0.25, 0.25)*40));
+    }
+}
+
+function generateBallots_irv(){
+    var ballotArr = [];
+    for(var i=0,l=voterObjArr.length; i<l; i++){
+        ballotArr[i] = voterObjArr[i].get_irv_ballot();
+    }
+    return ballotArr;
+}
+
+function setupSpectrumCanvas(){
+    var canvas = document.getElementById("politicalSpectrumCanvas");
+    var ctx = canvas.getContext("2d");
+    var width = canvas.getAttribute("width");
+    var height= canvas.getAttribute("height");
+    ctx.clearRect(0,0,width,height);
+    ctx.strokeStyle="#888888";
+    ctx.lineWidth=1;
+    for(var x=width/20; x<width; x+=width/20){
+        ctx.beginPath();
+        ctx.moveTo(x,0);
+        ctx.lineTo(x,height);
+        ctx.stroke();
+    }
+    for(var y=height/20; y<height; y+=height/20){
+        ctx.beginPath();
+        ctx.moveTo(0,y);
+        ctx.lineTo(width,y);
+        ctx.stroke();
+    }
+    ctx.strokeStyle="#444444";
+    ctx.lineWidth=3;
+    
+    ctx.beginPath();
+    ctx.moveTo(0, height/2);
+    ctx.lineTo(width, height/2);
+    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.moveTo(width/2, 0);
+    ctx.lineTo(width/2, height);
+    ctx.stroke();
+}
+
+function plotCandidates(candidateObjs){
+    var canvas = document.getElementById("politicalSpectrumCanvas");
+    var ctx = canvas.getContext("2d");
+    var width = canvas.getAttribute("width");
+    var height= canvas.getAttribute("height");
+    
+    ctx.lineWidth=1;
+    ctx.font='bold 20px sans-serif';
+    for(var i=0; i<candidateObjs.length; i++){
+        var candidate = candidateObjs[i];
+        ctx.fillStyle="#FF0000";
+        ctx.beginPath();
+        ctx.arc((10+candidate.x)*(width/20),(10-candidate.y)*(height/20),5,0,2*Math.PI);
+        //console.log((10+candidate.x)*(width/20)+","+(10-candidate.y)*(height/20));
+        ctx.fill();
+        ctx.fillText(candidate.name, (10+candidate.x)*(width/20) + 5,(10-candidate.y)*(height/20) + 5);
+    }
+}
+
+function plotVoters(voterObjs){
+    var canvas = document.getElementById("politicalSpectrumCanvas");
+    var ctx = canvas.getContext("2d");
+    var width = canvas.getAttribute("width");
+    var height= canvas.getAttribute("height");
+    
+    ctx.lineWidth=1;
+    ctx.font='20px sans-serif';
+    for(var i=0; i<voterObjs.length; i++){
+        var voter = voterObjs[i];
+        ctx.fillStyle="#000000";
+        ctx.beginPath();
+        ctx.arc((10+voter.x)*(width/20),(10-voter.y)*(height/20),1,0,2*Math.PI);
+        //console.log((10+voter.x)*(width/20)+","+(10-voter.y)*(height/20));
+        ctx.fill();
+    }
+}
+
 function instant_runoff_vote(candidateArrayINPUT, ballotArrayINPUT){
     var candidateArray = candidateArrayINPUT.slice(0); //Makes sure the given array of candidates isn't modified
     var ballotArray = copy2DArr(ballotArrayINPUT); //Makes sure the given array of ballots isn't modified
@@ -174,15 +308,23 @@ function makeTableHTML(myArray) {
 }
 
 function demoIRV(){
-    var testingCandidates = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("", parseInt(document.getElementById("numCandidates").value));
-    var randomBallotArr = randomBallots(testingCandidates, parseInt(document.getElementById("numBallots").value));
-    document.getElementById("IRVresults").innerHTML = makeTableHTML(instant_runoff_vote(testingCandidates, randomBallotArr));
+    setupSpectrumCanvas();
+    generateCandidates_random(parseInt(document.getElementById("numCandidates").value));
+    //generateVoters_normal(parseInt(document.getElementById("numBallots").value));
+    generateVoters_random(parseInt(document.getElementById("numBallots").value));
+    plotVoters(voterObjArr);
+    plotCandidates(candidateObjArr);
+    
+    var demoCandidates = candidateObjArr.map(function (val) { return val.name; });
+    var demoBallots = generateBallots_irv();
+    document.getElementById("IRVresults").innerHTML = makeTableHTML(instant_runoff_vote(demoCandidates, demoBallots));
     document.getElementById("IRVballotBlurb").innerHTML = "Formatted ballots (compatable with <a href='http://condorcet.ericgorr.net'>Eric Gorr's IRV calculator</a>)<br>";
     document.getElementById("IRVballotDiv").innerHTML = "<button type='button' id='showBallots'>Show ballots</button>";
     document.getElementById("showBallots").addEventListener("click", function(){
         document.getElementById("IRVballotDiv").innerHTML = "<textarea id='IRVballots' rows='10' cols='50'></textarea>";
-        document.getElementById("IRVballots").value = ballotArrayToWebFormat(randomBallotArr);
+        document.getElementById("IRVballots").value = ballotArrayToWebFormat(demoBallots);
     });
     
     
 }
+

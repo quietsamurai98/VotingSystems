@@ -7,11 +7,14 @@
 <!-- HTML ELEMENTS HERE -->
 Number of candidates <input id="numCandidates" type="number" min="2" max="26" value="4"> <br>
 Number of ballots to generate <input id="numBallots" type="number" min="2" value="1000"> <br>
+<canvas id="politicalSpectrumCanvas" width="400" height="400" style="border:1px solid #000000;"></canvas>
+<div id="IRV_WRAPPER">
 <button type="button" id="calculateIRV" onclick="demoIRV()">Simulate a random election</button>
 <div id="IRVresults"></div>
 <div id="IRVballotBlurb"></div>
 <div id="IRVballotDiv"></div>
-
+</div>
+<script src="randNormal.js"></script>
 <script src="index.js" id="src"></script>
 </body>
 </html>
