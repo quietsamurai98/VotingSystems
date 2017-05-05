@@ -178,5 +178,11 @@ function demoIRV(){
     var randomBallotArr = randomBallots(testingCandidates, parseInt(document.getElementById("numBallots").value));
     document.getElementById("IRVresults").innerHTML = makeTableHTML(instant_runoff_vote(testingCandidates, randomBallotArr));
     document.getElementById("IRVballotBlurb").innerHTML = "Formatted ballots (compatable with <a href='http://condorcet.ericgorr.net'>Eric Gorr's IRV calculator</a>)<br>";
-    document.getElementById("IRVballots").innerText = ballotArrayToWebFormat(randomBallotArr);
+    document.getElementById("IRVballotDiv").innerHTML = "<button type='button' id='showBallots'>Show ballots</button>";
+    document.getElementById("showBallots").addEventListener("click", function(){
+        document.getElementById("IRVballotDiv").innerHTML = "<textarea id='IRVballots' rows='10' cols='50'></textarea>";
+        document.getElementById("IRVballots").value = ballotArrayToWebFormat(randomBallotArr);
+    });
+    
+    
 }
