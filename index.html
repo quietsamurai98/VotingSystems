@@ -4,17 +4,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Voting Systems</title>
 <body>
-<!-- HTML ELEMENTS HERE -->
-Number of candidates <input id="numCandidates" type="number" min="2" max="26" value="4"> <br>
-Number of ballots to generate <input id="numBallots" type="number" min="2" value="1000"> <br>
-<canvas id="politicalSpectrumCanvas" width="400" height="400" style="border:1px solid #000000;"></canvas>
-<div id="IRV_WRAPPER">
-<button type="button" id="calculateIRV" onclick="demoIRV()">Simulate a random election</button>
-<div id="IRVresults"></div>
-<div id="IRVballotBlurb"></div>
-<div id="IRVballotDiv"></div>
-</div>
-<script src="randNormal.js"></script>
-<script src="index.js" id="src"></script>
+    <!-- HTML ELEMENTS HERE -->
+    <canvas id="politicalSpectrumCanvas" width="400" height="400" style="border:1px solid #000000;"></canvas> <br>
+    
+    Number of candidates <input id="numCandidates" type="number" min="2" max="26" value="4"> 
+    <button type="button" id="genCandidates" onclick="generateCandidates()">Generate Candidates</button>
+    <br>
+    
+    Number of voters <input id="numVoters" type="number" min="2" value="1000">
+    <button type="button" id="genVoters" onclick="generateVoters()">Generate Voters</button>
+    <br>
+    
+    <div id="IRV_WRAPPER">
+        <button type="button" id="calculateIRV" onclick="irv_simulate()">Simulate the election using Instant Runoff Voting</button>
+        <div id="IRVresults"></div>
+        <div id="IRVballotBlurb"></div>
+        <div id="IRVballotDiv"></div>
+    </div>
+    
+    <!-- JS SCRIPTS HERE -->
+    <script src="utilities.js"></script>
+    <script src="randNormal.js"></script>
+    <script src="democracy.js"></script>
+    <script src="spectrum.js"></script>
+    <script src="instantRunoffVoting.js" id="src"></script>
 </body>
 </html>
