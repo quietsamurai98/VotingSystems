@@ -5,8 +5,12 @@
 <title>Voting Systems</title>
 <body>
 <!-- HTML ELEMENTS HERE -->
-
-
+Number of candidates <input id="numCandidates" type="number" min="2" max="26" value="4"> <br>
+Number of ballots to generate <input id="numBallots" type="number" min="2" value="1000"> <br>
+<button type="button" id="calculateIRV" onclick="demoIRV()">Simulate a random election</button>
+<div id="IRVresults"></div>
+<div id="IRVballotBlurb"></div>
+<div id="IRVballots"></div>
 
 <script src="index.js" id="src"></script>
 </body>
