@@ -6,8 +6,8 @@ setupSpectrumCanvas(); //Draw the grid on load
  
 function drawSpectrum(){
     setupSpectrumCanvas();
-    plotCandidates(candidateObjArr);
     plotVoters(voterObjArr);
+    plotCandidates(candidateObjArr);
 }
 
 function setupSpectrumCanvas(){
