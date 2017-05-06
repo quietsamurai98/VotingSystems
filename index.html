@@ -3,7 +3,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Voting Systems</title>
-<body>
+<body onload="pageLoaded()">
     <!-- HTML ELEMENTS HERE -->
     <div id="politicalSpectrum" style="white-space:nowrap;">
         <canvas id="politicalSpectrumPlot" width="400" height="400" style="border:1px solid #000000;"></canvas>
@@ -22,18 +22,18 @@
     <button type="button" id="calculateAll" onclick="simulate()">Simulate the election using all methods</button><br>
     <br>
     <div id="FPTP_WRAPPER">
-        <button type="button" id="calculateFPTP" onclick="fptp_simulate()">Simulate the election using First Past The Post (Plurality) Voting</button>
+        <!--<button type="button" id="calculateFPTP" onclick="fptp_simulate()">Simulate the election using First Past The Post (Plurality) Voting</button>-->
         <div id="FPTPresults"></div>
     </div>
     <br>
     <div id="IRV_WRAPPER">
-        <button type="button" id="calculateIRV" onclick="irv_simulate()">Simulate the election using Instant Runoff Voting</button>
+        <!--<button type="button" id="calculateIRV" onclick="irv_simulate()">Simulate the election using Instant Runoff Voting</button>-->
         <div id="IRVresults"></div>
         <div id="IRVballotDiv"></div>
     </div>
     <br>
     <div id="RANGE_WRAPPER">
-        <button type="button" id="calculateRANGE" onclick="range_simulate()">Simulate the election using Range Voting</button>
+        <!--<button type="button" id="calculateRANGE" onclick="range_simulate()">Simulate the election using Range Voting</button>-->
         <div id="RANGEresults"></div>
     </div>
     <br>

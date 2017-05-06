@@ -2,7 +2,9 @@
  *     political positions of candidates and voters.
  */
 
-setupSpectrumCanvas("politicalSpectrumPlot"); //Draw the grid on load
+function pageLoaded(){
+    setupSpectrumCanvas("politicalSpectrumPlot"); //Draw the grid on load
+}
 
 var spectrum_colors = ["#0000FF", "#FF0000", "#00B000", "#FF8000", "#FF00FF", "#663399", "#800000", "#CCCC00"];
     //Color pallate used for candidates. Colors were selected to maximize distinguishability and recognizability
