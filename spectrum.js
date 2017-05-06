@@ -2,7 +2,7 @@
  *     political positions of candidates and voters.
  */
 
-function pageload(){
+function pageLoaded(){
     setupSpectrumCanvas("politicalSpectrumPlot"); //Draw the grid on load
 }
 
