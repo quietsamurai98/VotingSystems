@@ -2,7 +2,7 @@
  *
  */
 
-function copy2DArr(oldArr){ //Deep copy array of arrays of primitives
+function copy2DArr(oldArr){ //Returns a deep copy of an array of arrays of primitives
     var newArr = [];
     for (var i = 0, l = oldArr.length; i < l; i++){
         newArr[i] = oldArr[i].slice(0);
