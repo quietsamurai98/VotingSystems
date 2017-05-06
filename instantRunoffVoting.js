@@ -6,7 +6,7 @@ function irv_generateBallots(){
     return ballotArr;
 }
 
-function instant_runoff_vote(candidateArrayINPUT, ballotArrayINPUT){
+function instant_runoff_vote(candidateArrayINPUT, ballotArrayINPUT, mapRound){
     var candidateArray = candidateArrayINPUT.slice(0); //Makes sure the given array of candidates isn't modified
     var ballotArray = copy2DArr(ballotArrayINPUT); //Makes sure the given array of ballots isn't modified
     var voteData = [];
@@ -17,18 +17,29 @@ function instant_runoff_vote(candidateArrayINPUT, ballotArrayINPUT){
     
     var runningTally = irv_tally(candidateArray, ballotArray);  //Tally votes for each candidate
     roundOfVoting++;
-    voteData.push(["Votes won in round " + roundOfVoting].concat(runningTally));
+    voteData.push(["<button type='button' id='showMapIRV' onclick='irv_showMap("+ roundOfVoting +")'>Votes won in round "+ roundOfVoting +"</button>"].concat(runningTally));
     //irv_printRound(candidateArray, runningTally, roundOfVoting);
     while(maxInArr(runningTally) < votesToWin){
+        if(typeof(mapRound)!=="undefined" && roundOfVoting === mapRound){
+            //This only occurs if election is being simulated for the purpose of mapping a specific round.
+            //    The vote is halted, and all the ballots are returned, rather than aggregate data about each round of voting
+            return ballotArray;
+        }
         var lowestCandidate = irv_calcCandidateToEliminate(candidateArray, runningTally);
         irv_eliminate(lowestCandidate, ballotArray);
         runningTally = irv_tally(candidateArray, ballotArray);
         roundOfVoting++;
-        //irv_printRound(candidateArray, runningTally, roundOfVoting);
-        voteData.push(["Votes won in round " + roundOfVoting].concat(runningTally));
+        voteData.push(["<button type='button' id='showMapIRV' onclick='irv_showMap("+ roundOfVoting +")'>Votes won in round "+ roundOfVoting +"</button>"].concat(runningTally));
     }
     var winningCandidate = candidateArray[runningTally.indexOf(maxInArr(runningTally))];
     console.log("WINNER: " + winningCandidate);
+    
+    if(typeof(mapRound)!=="undefined"){
+        //This only occurs if election is being simulated for the purpose of mapping the last round.
+        //    Rather than returning aggregate data about each round of voting, the ballots are returned.
+        return ballotArray;
+    }
+    
     return [voteData, winningCandidate];
 }
 
@@ -99,6 +110,7 @@ function irv_ballotsToWebFormat(ballotArray){ //converts array of ballots to for
 
 function irv_resultsToHTML(electionResults) {
     var result = "<table border=1>";
+    result += "<th colspan=\""+(electionResults[0][0].length)+"\">Instant Runoff Voting</th>"
     for(var i=0; i<electionResults[0].length; i++) {
         result += "<tr>";
         for(var j=0; j<electionResults[0][i].length; j++){
@@ -129,3 +141,28 @@ function irv_simulate(){
     
 }
 
+function irv_showMap(mapRound){
+    var coloredVoterArr = [];
+    var irv_candidates = candidateObjArr.map(function (val) { return val.name; });
+    var ballotArr = instant_runoff_vote(irv_candidates, irv_generateBallots(), mapRound); //In order to get each voters vote in a certain round, each previous round of voting must be simulated
+    
+    var uneliminatedCandidates = []; //Array of candidates who are still in the running for a given round of voting
+    for(var i=0, l=ballotArr.length; i<l; i++){
+        var voter = voterObjArr[i];
+        var ballot= ballotArr[i];
+        var color;
+        if(ballot.length === 0){
+            color = "#000000";
+        } else {
+            vote = ballot[0];
+            candidate = candidateObjArr.find(function(elem){return elem.name===vote;});
+            color = candidate.color;
+            if(typeof uneliminatedCandidates.find(function(elem){return elem.name===candidate.name;}) === "undefined"){
+                //Translation: if (the candidate that the person voted for isn't in the list of candidates who are still in the running){ ...
+                uneliminatedCandidates.push(new Candidate(candidate.name, candidate.x, candidate.y, candidate.color));
+            }
+        }
+        coloredVoterArr[i] = new ColoredVoter(voter, color);
+    }
+    drawMap(coloredVoterArr, uneliminatedCandidates);
+}
