@@ -30,10 +30,11 @@ function Voter(x, y){ //Voter object. Contains data about a person who's voting.
     };
 }
 
-function Candidate(name, x, y){ //Candidate object. Contains data about a person who's running for office
+function Candidate(name, x, y, color){ //Candidate object. Contains data about a person who's running for office
     this.name = name;
     this.x = x; //x position on 2d political spectrum
     this.y = y; //y position on 2d political spectrum
+    this.color = color; //color used on graphical display
 }
 
 function generateCandidates(){
@@ -53,7 +54,7 @@ function generateCandidates_random(amount){
     candidateObjArr = [];
     var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     for(var i=0; i<amount; i++){
-        candidateObjArr.push(new Candidate(alphabet.charAt(i),Math.random()*20-10, Math.random()*20-10));
+        candidateObjArr.push(new Candidate(alphabet.charAt(i),Math.random()*20-10, Math.random()*20-10, spectrum_colors[i]));
     }
 }
 

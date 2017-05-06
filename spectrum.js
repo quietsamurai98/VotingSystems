@@ -3,7 +3,10 @@
  */
 
 setupSpectrumCanvas(); //Draw the grid on load
- 
+
+var spectrum_colors = ["#0000FF", "#FF0000", "#00B000", "#FF8000", "#FF00FF", "#663399", "#800000", "#CCCC00"];
+    //Color pallate used for candidates. Colors were selected to maximize distinguishability and recognizability
+
 function drawSpectrum(){
     setupSpectrumCanvas();
     plotVoters(voterObjArr);
@@ -15,6 +18,8 @@ function setupSpectrumCanvas(){
     var ctx = canvas.getContext("2d");
     var width = canvas.getAttribute("width");
     var height= canvas.getAttribute("height");
+    
+    //Draw grid lines
     ctx.clearRect(0,0,width,height);
     ctx.strokeStyle="#888888";
     ctx.lineWidth=1;
@@ -30,14 +35,16 @@ function setupSpectrumCanvas(){
         ctx.lineTo(width,y);
         ctx.stroke();
     }
+    
+    //Draw major axes
     ctx.strokeStyle="#444444";
     ctx.lineWidth=3;
-    
+    //X axis
     ctx.beginPath();
     ctx.moveTo(0, height/2);
     ctx.lineTo(width, height/2);
     ctx.stroke();
-    
+    //Y axis
     ctx.beginPath();
     ctx.moveTo(width/2, 0);
     ctx.lineTo(width/2, height);
@@ -51,15 +58,15 @@ function plotCandidates(candidateObjs){
     var height= canvas.getAttribute("height");
     
     ctx.lineWidth=1;
-    ctx.font='bold 20px sans-serif';
+    ctx.font="bold "+radius+"px sans-serif";
     for(var i=0; i<candidateObjs.length; i++){
         var candidate = candidateObjs[i];
-        ctx.fillStyle="#FF0000";
+        ctx.fillStyle=candidate.color;
         ctx.beginPath();
-        ctx.arc((10+candidate.x)*(width/20),(10-candidate.y)*(height/20),5,0,2*Math.PI);
+        ctx.arc((10+candidate.x)*(width/20),(10-candidate.y)*(height/20),radius,0,2*Math.PI);
         //console.log((10+candidate.x)*(width/20)+","+(10-candidate.y)*(height/20));
         ctx.fill();
-        ctx.fillText(candidate.name, (10+candidate.x)*(width/20) + 5,(10-candidate.y)*(height/20) + 5);
+        ctx.fillText(candidate.name, (10+candidate.x)*(width/20) + radius,(10-candidate.y)*(height/20) + radius);
     }
 }
 
