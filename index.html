@@ -14,12 +14,16 @@
     Number of voters <input id="numVoters" type="number" min="2" value="1000">
     <button type="button" id="genVoters" onclick="generateVoters()">Generate Voters</button>
     <br>
-    
+    <br>
     <div id="IRV_WRAPPER">
         <button type="button" id="calculateIRV" onclick="irv_simulate()">Simulate the election using Instant Runoff Voting</button>
         <div id="IRVresults"></div>
-        <div id="IRVballotBlurb"></div>
         <div id="IRVballotDiv"></div>
+    </div>
+    <br>
+    <div id="FPTP_WRAPPER">
+        <button type="button" id="calculateFPTP" onclick="fptp_simulate()">Simulate the election using First Past The Post (Plurality) Voting</button>
+        <div id="FPTPresults"></div>
     </div>
     
     <!-- JS SCRIPTS HERE -->
@@ -28,5 +32,6 @@
     <script src="democracy.js"></script>
     <script src="spectrum.js"></script>
     <script src="instantRunoffVoting.js" id="src"></script>
+    <script src="firstPastThePost.js" id="src"></script>
 </body>
 </html>

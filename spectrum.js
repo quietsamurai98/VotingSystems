@@ -56,9 +56,9 @@ function plotCandidates(candidateObjs){
     var ctx = canvas.getContext("2d");
     var width = canvas.getAttribute("width");
     var height= canvas.getAttribute("height");
-    
+    var radius = 10;
     ctx.lineWidth=1;
-    ctx.font="bold "+radius+"px sans-serif";
+    ctx.font="bold "+radius*2+"px sans-serif";
     for(var i=0; i<candidateObjs.length; i++){
         var candidate = candidateObjs[i];
         ctx.fillStyle=candidate.color;

@@ -1,7 +1,7 @@
 function irv_generateBallots(){
     var ballotArr = [];
     for(var i=0,l=voterObjArr.length; i<l; i++){
-        ballotArr[i] = voterObjArr[i].get_irv_ballot();
+        ballotArr[i] = voterObjArr[i].getBallot_irv();
     }
     return ballotArr;
 }
@@ -29,7 +29,7 @@ function instant_runoff_vote(candidateArrayINPUT, ballotArrayINPUT){
     }
     var winningCandidate = candidateArray[runningTally.indexOf(maxInArr(runningTally))];
     console.log("WINNER: " + winningCandidate);
-    return voteData;
+    return [voteData, winningCandidate];
 }
 
 function irv_tally(candidateArray, ballotArray){ //Returns array of the total number votes for each candidate.
@@ -97,15 +97,19 @@ function irv_ballotsToWebFormat(ballotArray){ //converts array of ballots to for
 
 
 
-function irv_makeTableHTML(myArray) {
+function irv_resultsToHTML(electionResults) {
     var result = "<table border=1>";
-    for(var i=0; i<myArray.length; i++) {
+    for(var i=0; i<electionResults[0].length; i++) {
         result += "<tr>";
-        for(var j=0; j<myArray[i].length; j++){
-            result += "<td>"+myArray[i][j]+"</td>";
+        for(var j=0; j<electionResults[0][i].length; j++){
+            result += "<td>"+electionResults[0][i][j]+"</td>";
         }
         result += "</tr>";
     }
+    result += "<tr>";
+    result += "<td>Winner:</td>";
+    result += "<td colspan=\""+(electionResults[0][0].length-1)+"\">"+electionResults[1]+"</td>";
+    result += "</tr>";
     result += "</table>";
 
     return result;
@@ -115,12 +119,11 @@ function irv_simulate(){
     
     var irv_candidates = candidateObjArr.map(function (val) { return val.name; });
     var irv_ballots = irv_generateBallots();
-    document.getElementById("IRVresults").innerHTML = irv_makeTableHTML(instant_runoff_vote(irv_candidates, irv_ballots));
-    document.getElementById("IRVballotBlurb").innerHTML = "Formatted ballots (compatable with <a href='http://condorcet.ericgorr.net'>Eric Gorr's IRV calculator</a>)<br>";
+    document.getElementById("IRVresults").innerHTML = irv_resultsToHTML(instant_runoff_vote(irv_candidates, irv_ballots));
     document.getElementById("IRVballotDiv").innerHTML = "<button type='button' id='showBallots'>Show ballots</button>";
     document.getElementById("showBallots").addEventListener("click", function(){
-        document.getElementById("IRVballotDiv").innerHTML = "<textarea id='IRVballots' rows='10' cols='50'></textarea>";
-        document.getElementById("IRVballots").value = ballotArrayToWebFormat(irv_ballots);
+        document.getElementById("IRVballotDiv").innerHTML = "<br>Formatted ballots (compatable with <a href='http://condorcet.ericgorr.net'>Eric Gorr's IRV calculator</a>):<br><textarea id='IRVballots' rows='10' cols='50'></textarea>";
+        document.getElementById("IRVballots").value = irv_ballotsToWebFormat(irv_ballots);
     });
     
     

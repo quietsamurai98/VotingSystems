@@ -10,7 +10,9 @@ function Voter(x, y){ //Voter object. Contains data about a person who's voting.
     this.x = x; //x position on 2d political spectrum
     this.y = y; //y position on 2d political spectrum
     
-    this.get_irv_ballot = function(){
+    this.getDistanceArr = function(){  
+        //Returns sorted array of candidate names and distances
+        //Example return value: [[0.268,"C"], [4.1289,"A"], [7.297,"B"]]
         var distArr = [];
         var l = candidateObjArr.length;
         for(var i=0; i<l; i++){
@@ -22,12 +24,25 @@ function Voter(x, y){ //Voter object. Contains data about a person who's voting.
         distArr.sort(function(a,b) {
             return a[0]-b[0];
         });
+        return distArr;
+    }
+    
+    this.getBallot_irv = function(){
+        //Returns a ballot with all candidates ranked in order of preference (closer = more preferrable)
+        //Example return value: ["C", "A", "B"]
+        distArr = this.getDistanceArr();
         var ballot = [];
-        for(var i=0; i<l; i++){
+        for(var i=0, l=distArr.length; i<l; i++){
             ballot[i] = distArr[i][1];
         }
         return ballot;
     };
+    
+    this.getBallot_fptp = function(){
+        //Returns a ballot voting for the most preferrable (closest) candidate
+        //Example return value: "C"
+        return this.getDistanceArr()[0][1];
+    }
 }
 
 function Candidate(name, x, y, color){ //Candidate object. Contains data about a person who's running for office
@@ -45,7 +60,7 @@ function generateCandidates(){
 
 function generateVoters(){
     var amount = parseInt(document.getElementById("numVoters").value);
-    generateVoters_random(amount);
+    generateVoters_doubleNormal(amount);
     drawSpectrum();
     
 }
@@ -65,9 +80,34 @@ function generateVoters_random(amount){
     }
 }
 
-function generateVoters_normal(amount){ //Uses normal distribution
+function generateVoters_normal(amount){ //Uses single, centered normal distribution
     voterObjArr = [];
     for(var i=0; i<amount; i++){
-        voterObjArr.push(new Voter(normalRandomInRange(-0.25, 0.25)*40, normalRandomInRange(-0.25, 0.25)*40));
+        var coords = randNorm2D([0,0], 10/3);
+        var x = coords[0];
+        var y = coords[1];
+        voterObjArr.push(new Voter(x, y));
+    }
+}
+
+function generateVoters_doubleNormal(amount){ //Two clusters of voters
+    voterObjArr = [];
+    
+    for(var i=0; i<amount/2; i++){ //Left cluster
+        var coords = randNorm2D([-5,0], 10/4);
+        var x = coords[0];
+        var y = coords[1];
+        voterObjArr.push(new Voter(x, y));
+    }
+    
+    for(var i=0; i<amount/2; i++){ //Right cluster
+        var coords = randNorm2D([5,0], 10/4);
+        var x = coords[0];
+        var y = coords[1];
+        voterObjArr.push(new Voter(x, y));
+    }
+    
+    if(amount%2 === 1){
+        voterObjArr.splice(randInt(0, amount), 1);
     }
 }
