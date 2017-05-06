@@ -5,28 +5,47 @@
 <title>Voting Systems</title>
 <body>
     <!-- HTML ELEMENTS HERE -->
-    <canvas id="politicalSpectrumCanvas" width="400" height="400" style="border:1px solid #000000;"></canvas> <br>
+    <div id="politicalSpectrum" style="white-space:nowrap;">
+        <canvas id="politicalSpectrumPlot" width="400" height="400" style="border:1px solid #000000;"></canvas>
+        <canvas id="politicalSpectrumKey" width="200" height="400" style="border:1px solid #000000;"></canvas>
+        <canvas id="politicalSpectrumMap" width="400" height="400" style="border:0px solid #000000;"></canvas>
+        <br>
+    </div>
     
-    Number of candidates <input id="numCandidates" type="number" min="2" max="26" value="4"> 
+    Number of candidates <input id="numCandidates" type="number" min="2" max="8" value="4"> 
     <button type="button" id="genCandidates" onclick="generateCandidates()">Generate Candidates</button>
     <br>
     
     Number of voters <input id="numVoters" type="number" min="2" value="1000">
-    <button type="button" id="genVoters" onclick="generateVoters()">Generate Voters</button>
+    <button type="button" id="genVoters" onclick="generateVoters()">Generate Voters</button><br>
     <br>
-    
+    <button type="button" id="calculateAll" onclick="simulate()">Simulate the election using all methods</button><br>
+    <br>
+    <div id="FPTP_WRAPPER">
+        <button type="button" id="calculateFPTP" onclick="fptp_simulate()">Simulate the election using First Past The Post (Plurality) Voting</button>
+        <div id="FPTPresults"></div>
+    </div>
+    <br>
     <div id="IRV_WRAPPER">
         <button type="button" id="calculateIRV" onclick="irv_simulate()">Simulate the election using Instant Runoff Voting</button>
         <div id="IRVresults"></div>
-        <div id="IRVballotBlurb"></div>
         <div id="IRVballotDiv"></div>
     </div>
+    <br>
+    <div id="RANGE_WRAPPER">
+        <button type="button" id="calculateRANGE" onclick="range_simulate()">Simulate the election using Range Voting</button>
+        <div id="RANGEresults"></div>
+    </div>
+    <br>
+    
     
     <!-- JS SCRIPTS HERE -->
     <script src="utilities.js"></script>
     <script src="randNormal.js"></script>
     <script src="democracy.js"></script>
     <script src="spectrum.js"></script>
+    <script src="firstPastThePost.js" id="src"></script>
+    <script src="rangeVoting.js" id="src"></script>
     <script src="instantRunoffVoting.js" id="src"></script>
 </body>
 </html>
