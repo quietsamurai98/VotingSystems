@@ -5,6 +5,7 @@
 
 var voterObjArr = [];
 var candidateObjArr = [];
+var DEBUG_UNIFORM_VOTER_DISTRIBUTION = false;
 
 function Voter(x, y){ //Voter object. Contains data about a person who's voting.
     this.x = x; //x position on 2d political spectrum
@@ -85,7 +86,11 @@ function generateCandidates(){
 
 function generateVoters(){
     var amount = parseInt(document.getElementById("numVoters").value);
-    generateVoters_doubleNormal(amount);
+    if(DEBUG_UNIFORM_VOTER_DISTRIBUTION){
+        generateVoters_normal(amount);
+    } else {
+        generateVoters_doubleNormal(amount);
+    }
     drawSpectrum();
     
 }
