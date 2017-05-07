@@ -197,6 +197,7 @@ function drawMap_OPOV(candidateArr){
     //  coodinate would cast their ballot for.
     var canvas = document.getElementById("politicalSpectrumMap");
     clearCanvas("politicalSpectrumMap");
+    plotVoters(voterObjArr, "politicalSpectrumMap", 0.75);
     var ctx = canvas.getContext("2d");
     var width = canvas.getAttribute("width");
     var height= canvas.getAttribute("height");
@@ -219,7 +220,6 @@ function drawMap_OPOV(candidateArr){
     }
     ctx.globalAlpha=1;
     setupSpectrumCanvas("politicalSpectrumMap");
-    plotVoters(voterObjArr, "politicalSpectrumMap", 0.75);
     plotColorCandidates(candidateArr, "politicalSpectrumMap");
     showMap();
 }
