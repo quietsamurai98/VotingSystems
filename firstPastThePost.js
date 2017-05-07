@@ -1,7 +1,7 @@
-function fptp_generateBallots(){
+function fptp_generateBallots(fptp_candidates){
     var ballotArr = [];
     for(var i=0,l=voterObjArr.length; i<l; i++){
-        ballotArr[i] = voterObjArr[i].getBallot_fptp();
+        ballotArr[i] = voterObjArr[i].getBallot_fptp(fptp_candidates);
     }
     return ballotArr;
 }
@@ -20,7 +20,7 @@ function first_past_the_post_vote(candidateArrayINPUT, ballotArrayINPUT){
         candidateScores[candidateArray.indexOf(ballotArray[i])]++; //Add one vote to the candidate indicated on the ballot ballotArray[i]
     }
     
-    voteData.push(["<button type='button' id='showMapFPTP' onclick='fptp_showMap()'>Total votes</button>"].concat(candidateScores));
+    voteData.push(["<button type='button' id='showPlotFPTP' onclick='fptp_showPlot()'>Total votes</button>"].concat(candidateScores));
     
     var winningCandidate = candidateArray[candidateScores.indexOf(maxInArr(candidateScores))];
     console.log("WINNER: " + winningCandidate);
@@ -30,7 +30,7 @@ function first_past_the_post_vote(candidateArrayINPUT, ballotArrayINPUT){
 
 function fptp_makeTableHTML(electionResults) {
     var result = "<table border=1>";
-    result += "<th colspan=\""+(electionResults[0][0].length)+"\">First Past The Post (Plurality)</th>"
+    result += "<th colspan=\""+(electionResults[0][0].length)+"\">First Past The Post</th>"
     for(var i=0; i<electionResults[0].length; i++) {
         result += "<tr>";
         for(var j=0; j<electionResults[0][i].length; j++){
@@ -49,19 +49,24 @@ function fptp_makeTableHTML(electionResults) {
 
 function fptp_simulate(){
     var fptp_candidates = candidateObjArr.map(function (val) { return val.name; });
-    var fptp_ballots = fptp_generateBallots();
+    var fptp_ballots = fptp_generateBallots(candidateObjArr);
     var htmlStr = fptp_makeTableHTML(first_past_the_post_vote(fptp_candidates, fptp_ballots));
     document.getElementById("FPTPresults").innerHTML =  htmlStr;
 }
 
-function fptp_showMap(){
+function fptp_showPlot(fptp_candidates){
+    if(typeof(fptp_candidates) === "undefined"){
+        fptp_candidates = candidateObjArr; //ONLY ACCEPTABLE FOR FPTP, because FPTP always uses all candidates.
+    }
+    document.getElementById("btnRedrawSpectrum").style.visibility = "visible";
     var coloredVoterArr = [];
-    var ballotArr = fptp_generateBallots();
+    var ballotArr = fptp_generateBallots(fptp_candidates);
     for(var i=0, l=ballotArr.length; i<l; i++){
         var voter = voterObjArr[i];
         var ballot= ballotArr[i];
         var color = candidateObjArr.find(function(elem){return elem.name===ballot;}).color;
         coloredVoterArr[i] = new ColoredVoter(voter, color);
     }
-    drawMap(coloredVoterArr);
+    drawColorPlot(coloredVoterArr);
+    drawMap_OPOV(fptp_candidates);
 }

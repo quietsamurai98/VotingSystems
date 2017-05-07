@@ -1,7 +1,7 @@
-function range_generateBallots(range){
+function range_generateBallots(candidateArr, range){
     var ballotArr = [];
     for(var i=0,l=voterObjArr.length; i<l; i++){
-        ballotArr[i] = voterObjArr[i].getBallot_range(range).map(function (elem){
+        ballotArr[i] = voterObjArr[i].getBallot_range(candidateArr, range).map(function (elem){
             return elem[0]; //Only include numeric score in ballotArr, individual's ballot order is the same as candidateArray order
         });
     }
@@ -53,6 +53,6 @@ function range_makeTableHTML(electionResults) {
 
 function range_simulate(){
     var range_candidates = candidateObjArr.map(function (val) { return val.name; });
-    var range_ballots = range_generateBallots(100); //Parameter here is voting scale. IRL, ballot would say "Assign a score from 0 to <PARAM> to each candidate"
+    var range_ballots = range_generateBallots(candidateObjArr, 100); //Parameter here is voting scale. IRL, ballot would say "Assign a score from 0 to <PARAM> to each candidate"
     document.getElementById("RANGEresults").innerHTML = range_makeTableHTML(range_vote(range_candidates, range_ballots));
 }
