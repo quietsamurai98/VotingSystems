@@ -1,7 +1,7 @@
-function irv_generateBallots(){
+function irv_generateBallots(irv_candidates){
     var ballotArr = [];
     for(var i=0,l=voterObjArr.length; i<l; i++){
-        ballotArr[i] = voterObjArr[i].getBallot_irv();
+        ballotArr[i] = voterObjArr[i].getBallot_irv(irv_candidates);
     }
     return ballotArr;
 }
@@ -17,7 +17,7 @@ function instant_runoff_vote(candidateArrayINPUT, ballotArrayINPUT, mapRound){
     
     var runningTally = irv_tally(candidateArray, ballotArray);  //Tally votes for each candidate
     roundOfVoting++;
-    voteData.push(["<button type='button' id='showMapIRV' onclick='irv_showMap("+ roundOfVoting +")'>Votes won in round "+ roundOfVoting +"</button>"].concat(runningTally));
+    voteData.push(["<button type='button' id='showPlotIRV' onclick='irv_showPlot("+ roundOfVoting +")'>Votes won in round "+ roundOfVoting +"</button>"].concat(runningTally));
     //irv_printRound(candidateArray, runningTally, roundOfVoting);
     while(maxInArr(runningTally) < votesToWin){
         if(typeof(mapRound)!=="undefined" && roundOfVoting === mapRound){
@@ -29,7 +29,7 @@ function instant_runoff_vote(candidateArrayINPUT, ballotArrayINPUT, mapRound){
         irv_eliminate(lowestCandidate, ballotArray);
         runningTally = irv_tally(candidateArray, ballotArray);
         roundOfVoting++;
-        voteData.push(["<button type='button' id='showMapIRV' onclick='irv_showMap("+ roundOfVoting +")'>Votes won in round "+ roundOfVoting +"</button>"].concat(runningTally));
+        voteData.push(["<button type='button' id='showPlotIRV' onclick='irv_showPlot("+ roundOfVoting +")'>Votes won in round "+ roundOfVoting +"</button>"].concat(runningTally));
     }
     var winningCandidate = candidateArray[runningTally.indexOf(maxInArr(runningTally))];
     console.log("WINNER: " + winningCandidate);
@@ -130,7 +130,7 @@ function irv_resultsToHTML(electionResults) {
 function irv_simulate(){
     
     var irv_candidates = candidateObjArr.map(function (val) { return val.name; });
-    var irv_ballots = irv_generateBallots();
+    var irv_ballots = irv_generateBallots(candidateObjArr);
     document.getElementById("IRVresults").innerHTML = irv_resultsToHTML(instant_runoff_vote(irv_candidates, irv_ballots));
     document.getElementById("IRVballotDiv").innerHTML = "<button type='button' id='showBallots'>Show ballots</button>";
     document.getElementById("showBallots").addEventListener("click", function(){
@@ -141,12 +141,13 @@ function irv_simulate(){
     
 }
 
-function irv_showMap(mapRound){
+function irv_showPlot(mapRound){
+    document.getElementById("btnRedrawSpectrum").style.visibility = "visible";
     var coloredVoterArr = [];
     var irv_candidates = candidateObjArr.map(function (val) { return val.name; });
-    var ballotArr = instant_runoff_vote(irv_candidates, irv_generateBallots(), mapRound); //In order to get each voters vote in a certain round, each previous round of voting must be simulated
+    var ballotArr = instant_runoff_vote(irv_candidates, irv_generateBallots(candidateObjArr), mapRound); //In order to get each voter's vote in a certain round, all previous rounds of voting must be simulated
     
-    var uneliminatedCandidates = []; //Array of candidates who are still in the running for a given round of voting
+    var uneliminatedCandidates = []; //Array of candidates (objects) who are still in the running for a given round of voting
     for(var i=0, l=ballotArr.length; i<l; i++){
         var voter = voterObjArr[i];
         var ballot= ballotArr[i];
@@ -164,5 +165,6 @@ function irv_showMap(mapRound){
         }
         coloredVoterArr[i] = new ColoredVoter(voter, color);
     }
-    drawMap(coloredVoterArr, uneliminatedCandidates);
+    drawColorPlot(coloredVoterArr, uneliminatedCandidates);
+    drawMap_OPOV(uneliminatedCandidates);
 }

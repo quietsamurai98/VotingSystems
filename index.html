@@ -8,7 +8,7 @@
     <div id="politicalSpectrum" style="white-space:nowrap;">
         <canvas id="politicalSpectrumPlot" width="400" height="400" style="border:1px solid #000000;"></canvas>
         <canvas id="politicalSpectrumKey" width="200" height="400" style="border:1px solid #000000;"></canvas>
-        <canvas id="politicalSpectrumMap" width="400" height="400" style="border:0px solid #000000;"></canvas>
+        <canvas id="politicalSpectrumMap" width="400" height="400" style="border:1px solid #000000; visibility: hidden"></canvas>
         <br>
     </div>
     
@@ -16,13 +16,15 @@
     <button type="button" id="genCandidates" onclick="generateCandidates()">Generate Candidates</button>
     <br>
     
-    Number of voters <input id="numVoters" type="number" min="2" value="1000">
+    Number of voters <input id="numVoters" type="number" min="2" value="10000">
     <button type="button" id="genVoters" onclick="generateVoters()">Generate Voters</button><br>
+    
+    <button type="button" id="btnRedrawSpectrum" onclick="drawSpectrum()" style="visibility: hidden;">Reset Voter Colors</button><br>
     <br>
     <button type="button" id="calculateAll" onclick="simulate()">Simulate the election using all methods</button><br>
     <br>
     <div id="FPTP_WRAPPER">
-        <!--<button type="button" id="calculateFPTP" onclick="fptp_simulate()">Simulate the election using First Past The Post (Plurality) Voting</button>-->
+        <!--<button type="button" id="calculateFPTP" onclick="fptp_simulate()">Simulate the election using First Past The Post Voting</button>-->
         <div id="FPTPresults"></div>
     </div>
     <br>
@@ -40,8 +42,8 @@
     
     
     <!-- JS SCRIPTS HERE -->
-    <script src="utilities.js"></script>
-    <script src="randNormal.js"></script>
+    <script src="arrayUtilities.js"></script>
+    <script src="randomUtilities.js"></script>
     <script src="democracy.js"></script>
     <script src="spectrum.js"></script>
     <script src="firstPastThePost.js" id="src"></script>
