@@ -80,7 +80,7 @@ function generateCandidates(){
     if(DEBUG_SPLIT_THE_VOTE){
         generateCandidates_spoilerDemo();
     } else {
-        generateCandidates_random(amount);
+        generateCandidates_twoParty(amount);
     }
     drawSpectrum();
 }
@@ -119,6 +119,31 @@ function generateVoters_random(amount){
     voterObjArr = [];
     for(var i=0; i<amount; i++){
         voterObjArr[i] = new Voter(randRange(-10,10), randRange(-10,10));
+    }
+}
+
+function generateCandidates_twoParty(amount){
+    candidateObjArr = [];
+    var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789"; //There should only be 8 candidates at most, however, up to 61 candidates could theoretically be named
+    if(amount>0){ //Left
+        var coords = randNorm2D(-5, 1, 0, 1);
+        var x = coords[0];
+        var y = coords[1];
+        candidateObjArr[0] = new Candidate("A", x, y, spectrum_colors[0]);
+        if(amount>1){ //Right
+            var coords = randNorm2D(5, 1, 0, 1);
+            var x = coords[0];
+            var y = coords[1];
+            candidateObjArr[1] = new Candidate("B", x, y, spectrum_colors[1]);
+            if(amount>2){//Random
+                for(var i=2, l=Math.min(amount,8); i<l; i++){
+                    candidateObjArr[i] = new Candidate(alphabet.charAt(i), randRange(-10,10), randRange(-10,10), spectrum_colors[i]);
+                }
+                for(var i=8, l=Math.min(amount,61); i<l; i++){
+                    candidateObjArr[i] = new Candidate(alphabet.charAt(i), randRange(-10,10), randRange(-10,10), randColor());
+                }
+            }
+        }
     }
 }
 
